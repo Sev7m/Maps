@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive Map</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    .mapboxgl-marker {
+      border-radius: 50%;
+      background-color: #175870;
+      width: 24px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoianVuaW9yODI1IiwiYSI6ImNsa2hndmt6azAxcGozZm83cnJvb2cyaDYifQ.J24mG30q58B-9aqdFuZ2Kg';
+
+    // Custom map style with the specified color (#449EC0) and a white background
+    var customStyle = {
+      version: 8,
+      sources: {
+        'simple-tiles': {
+          type: 'raster',
+          tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+          tileSize: 256,
+        }
+      },
+      layers: [
+        {
+          id: 'simple-tiles',
+          type: 'raster',
+          source: 'simple-tiles',
+          minzoom: 0,
+          maxzoom: 22
+        }
+      ],
+      // Specify the color for the water features (e.g., rivers, lakes)
+      water: {
+        "color": "#449EC0"
+      },
+    };
+
+    // Initialize the map
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: customStyle,
+      center: [123.8981, 10.3157], // Center of Cebu City (longitude, latitude)
+      zoom: 12 // Zoom level (adjust as needed)
+    });
+
+    // Add icons for Cebu City, Campinas, and Miami
+    var cities = [
+      { name: 'Cebu City', location: [123.8981, 10.3157] },
+      { name: 'Campinas', location: [-47.0626, -22.9099] },
+      { name: 'Miami', location: [-80.1917902, 25.7616798] }
+    ];
+
+    cities.forEach(function(city) {
+      var popup = new mapboxgl.Popup().setText(city.name);
+
+      // Create a custom HTML element for the marker icon
+      var markerElement = document.createElement('div');
+      markerElement.className = 'mapboxgl-marker';
+      
+      var marker = new mapboxgl.Marker(markerElement)
+        .setLngLat(city.location)
+        .setPopup(popup)
+        .addTo(map);
+    });
+  </script>
+</body>
+</html>
